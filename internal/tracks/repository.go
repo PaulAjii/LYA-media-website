@@ -62,3 +62,40 @@ func (r *TrackRepository) GetByAlbumID(ctx context.Context, albumID uuid.UUID) (
 
 	return tracks, nil
 }
+
+func (r *TrackRepository) UpdateTrack(ctx context.Context, id uuid.UUID, payload dtos.UpdateTrackDTO) (*dtos.TrackDTO, error) {
+	stmt := `
+		UPDATE tracks
+		SET 
+			title = COALESCE($1, title),
+			track_number = COALESCE($2, track_number)
+		WHERE id = $3
+		RETURNING id, album_id, title, track_number, audio_url, created_at
+	`
+
+	rows, err := r.db.Query(ctx, stmt, payload.Title, payload.TrackNumber, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+	defer rows.Close()
+
+	upadtedTrack, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[dtos.TrackDTO])
+	if err != nil {
+		return nil, fmt.Errorf("failed to collect row: %w", err)
+	}
+
+	return &upadtedTrack, nil
+}
+
+func (r *TrackRepository) DeleteTrack(ctx context.Context, id uuid.UUID) error {
+	stmt := `
+		DELETE FROM tracks
+		WHERE id = $1
+	`
+	_, err := r.db.Exec(ctx, stmt, id)
+	if err != nil {
+		return fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	return nil
+}
