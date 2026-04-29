@@ -66,25 +66,40 @@ func (r *AlbumRepository) GetAlbums(ctx context.Context) ([]dtos.Album, error) {
 }
 
 // Get Album by ID
-func (r *AlbumRepository) GetAlbumByID(ctx context.Context, id uuid.UUID) (*dtos.Album, error) {
+func (r *AlbumRepository) GetAlbumByID(ctx context.Context, id uuid.UUID) (dtos.AlbumWithTracks, error) {
 	stmt := `
 		SELECT
-			id, title, date, summary, thumbnail_url, created_at
-		FROM albums
-		WHERE id = $1
+			a.id, a.title, a.date, a.summary, a.thumbnail_url, a.created_at,
+		COALESCE(
+			json_agg(
+				json_build_object(
+					'id'	, t.id,
+					'title', t.title,
+					'albumId', t.album_id,
+					'trackNumber', t.track_number,
+					'audioUrl', t.audio_url,
+					'createdAt', t.created_at
+				) ORDER BY t.track_number ASC
+			) FILTER (WHERE t.id IS NOT NULL),
+			 '[]'::json
+		) AS tracks
+		FROM albums a
+		LEFT JOIN tracks t ON a.id = t.album_id
+		WHERE a.id = $1
+		GROUP BY a.id
 	`
 	rows, err := r.db.Query(ctx, stmt, id)
 	if err != nil {
-		return nil, fmt.Errorf("failed to execute query: %w", err)
+		return dtos.AlbumWithTracks{}, fmt.Errorf("failed to execute query: %w", err)
 	}
 	defer rows.Close()
 
-	album, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[dtos.Album])
+	album, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[dtos.AlbumWithTracks])
 	if err != nil {
-		return nil, fmt.Errorf("failed to collect album: %w", err)
+		return dtos.AlbumWithTracks{}, fmt.Errorf("failed to collect album: %w", err)
 	}
 
-	return &album, nil
+	return album, nil
 }
 
 // Get Album by Title
