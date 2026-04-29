@@ -1,6 +1,8 @@
 package tracks
 
 import (
+	"strings"
+
 	"github.com/PaulAjii/LYA-media-website/internal/tracks/dtos"
 	"github.com/PaulAjii/LYA-media-website/pkg/response"
 	"github.com/gofiber/fiber/v3"
@@ -56,4 +58,50 @@ func (h *TrackHandler) GetTracksByAlbumID(c fiber.Ctx) error {
 	}
 
 	return response.Success(c, "Tracks retrieved successfully", tracks, fiber.StatusOK)
+}
+
+func (h *TrackHandler) UpdateTrack(c fiber.Ctx) error {
+	trackID := c.Params("trackID")
+	if trackID == "" {
+		return response.Error(c, "TrackID is required", fiber.StatusBadRequest)
+	}
+
+	id, err := uuid.Parse(trackID)
+	if err != nil {
+		return response.Error(c, "Invalid TrackID format", fiber.StatusBadRequest)
+	}
+
+	var payload dtos.UpdateTrackDTO
+	if err := c.Bind().Body(&payload); err != nil {
+		return response.Error(c, err.Error(), fiber.StatusBadRequest)
+	}
+
+	updatedTrack, err := h.u.UpdateTrack(c.Context(), id, payload)
+	if err != nil {
+		if strings.Contains(err.Error(), "no rows in result set") {
+			return response.Error(c, "Track not found", fiber.StatusNotFound)
+		}
+		return response.Error(c, err.Error(), fiber.StatusInternalServerError)
+	}
+
+	return response.Success(c, "Tracked updated successfully", updatedTrack, fiber.StatusOK)
+}
+
+func (h *TrackHandler) DeleteTrack(c fiber.Ctx) error {
+	trackID := c.Params("trackID")
+	if trackID == "" {
+		return response.Error(c, "TrackID is required", fiber.StatusBadRequest)
+	}
+
+	id, err := uuid.Parse(trackID)
+	if err != nil {
+		return response.Error(c, "Invalid TrackID format", fiber.StatusBadRequest)
+	}
+
+	err = h.u.DeleteTrack(c.Context(), id)
+	if err != nil {
+		return response.Error(c, err.Error(), fiber.StatusInternalServerError)
+	}
+
+	return response.Success(c, "Track deleted successfully", nil, fiber.StatusNoContent)
 }
