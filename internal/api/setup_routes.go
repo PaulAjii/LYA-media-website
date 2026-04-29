@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/PaulAjii/LYA-media-website/internal/albums"
+	"github.com/PaulAjii/LYA-media-website/internal/tracks"
 	"github.com/PaulAjii/LYA-media-website/pkg/db"
 	"github.com/gofiber/fiber/v3"
 )
@@ -19,4 +20,10 @@ func SetupRoutes(app *fiber.App) {
 	albumsUsecase := albums.NewUseCase(albumsRepo)
 	albumsHandler := albums.NewHandler(albumsUsecase)
 	albums.SetupRoutes(api, albumsHandler)
+
+	// tracks route setup
+	tracksRepo := tracks.NewTrackRepository(pool)
+	tracksUsecase := tracks.NewUseCase(tracksRepo)
+	tracksHandler := tracks.NewHandler(tracksUsecase)
+	tracks.SetupRoutes(api, tracksHandler)
 }
