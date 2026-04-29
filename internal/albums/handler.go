@@ -128,5 +128,5 @@ func (h *AlbumHandler) DeleteAlbum(c fiber.Ctx) error {
 		return response.Error(c, err.Error(), fiber.StatusInternalServerError)
 	}
 
-	return nil
+	return response.Success(c, "Album deleted successfully", nil, fiber.StatusNoContent)
 }
