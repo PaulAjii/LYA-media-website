@@ -28,8 +28,13 @@ func (u *AlbumUseCase) GetAlbums(ctx context.Context) ([]dtos.Album, error) {
 }
 
 // Get Album by ID
-func (u *AlbumUseCase) GetAlbumByID(ctx context.Context, id uuid.UUID) (*dtos.Album, error) {
-	return u.repo.GetAlbumByID(ctx, id)
+func (u *AlbumUseCase) GetAlbumByID(ctx context.Context, id uuid.UUID) (dtos.AlbumWithTracks, error) {
+	album, err := u.repo.GetAlbumByID(ctx, id)
+	if err != nil {
+		return dtos.AlbumWithTracks{}, err
+	}
+
+	return album, nil
 }
 
 // Get Album by title
