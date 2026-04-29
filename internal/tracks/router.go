@@ -9,4 +9,6 @@ func SetupRoutes(api fiber.Router, h *TrackHandler) {
 
 	tracks.Post("/", h.CreateTrack)
 	tracks.Get("/album/:albumID", h.GetTracksByAlbumID)
+	tracks.Patch("/:trackID", h.UpdateTrack)
+	tracks.Delete("/:trackID", h.DeleteTrack)
 }
