@@ -13,10 +13,10 @@ import (
 
 type TrackHandler struct {
 	u       *TrackUseCase
-	storage *storage.SupabaseStorage
+	storage *storage.R2Storage
 }
 
-func NewHandler(u *TrackUseCase, storage *storage.SupabaseStorage) *TrackHandler {
+func NewHandler(u *TrackUseCase, storage *storage.R2Storage) *TrackHandler {
 	return &TrackHandler{
 		u:       u,
 		storage: storage,
@@ -52,14 +52,14 @@ func (h *TrackHandler) CreateTrack(c fiber.Ctx) error {
 		trackNumber = parseInt(trackNumberStr, 1)
 	}
 
+	// Parse track title to create a clean filename
+	trackTitle := fmt.Sprintf("%s - Track %d - %s", albumTitle, trackNumber, title)
+
 	// Get uploaded file
 	file, err := c.FormFile("audio")
 	if err != nil {
 		return response.Error(c, "audio file is required", fiber.StatusBadRequest)
 	}
-
-	// Track title
-	fileTitle := albumTitle + " - " + title + " " + trackNumberStr
 
 	// Open the file
 	openedFile, err := file.Open()
@@ -68,8 +68,8 @@ func (h *TrackHandler) CreateTrack(c fiber.Ctx) error {
 	}
 	defer openedFile.Close()
 
-	// Upload to Supabase Storage
-	audioURL, err := h.storage.UploadFile(c.Context(), openedFile, file, fmt.Sprintf("tracks/%s", albumTitle), fileTitle)
+	// Upload to R2 Storage
+	audioURL, err := h.storage.UploadFile(c.Context(), openedFile, file, fmt.Sprintf("tracks/%s", albumTitle), trackTitle)
 	if err != nil {
 		return response.Error(c, fmt.Sprintf("failed to upload audio: %v", err), fiber.StatusInternalServerError)
 	}
@@ -100,6 +100,7 @@ func parseInt(s string, defaultValue int) int {
 	return result
 }
 
+// GetTracksByAlbumID retrieves all tracks for a given album ID
 func (h *TrackHandler) GetTracksByAlbumID(c fiber.Ctx) error {
 	albumID := c.Params("albumID")
 	if albumID == "" {
@@ -119,6 +120,7 @@ func (h *TrackHandler) GetTracksByAlbumID(c fiber.Ctx) error {
 	return response.Success(c, "Tracks retrieved successfully", tracks, fiber.StatusOK)
 }
 
+// UpdateTrack allows updating track details except for the audio file
 func (h *TrackHandler) UpdateTrack(c fiber.Ctx) error {
 	trackID := c.Params("trackID")
 	if trackID == "" {
@@ -146,18 +148,19 @@ func (h *TrackHandler) UpdateTrack(c fiber.Ctx) error {
 	return response.Success(c, "Tracked updated successfully", updatedTrack, fiber.StatusOK)
 }
 
+// DeleteTrack deletes a track and its associated audio file from R2 Storage
 func (h *TrackHandler) DeleteTrack(c fiber.Ctx) error {
 	trackID := c.Params("trackID")
 	if trackID == "" {
 		return response.Error(c, "TrackID is required", fiber.StatusBadRequest)
 	}
 
-	id, err := uuid.Parse(trackID)
+	_, err := uuid.Parse(trackID)
 	if err != nil {
 		return response.Error(c, "Invalid TrackID format", fiber.StatusBadRequest)
 	}
 
-	err = h.u.DeleteTrack(c.Context(), id)
+	err = h.u.DeleteTrack(c.Context(), trackID)
 	if err != nil {
 		return response.Error(c, err.Error(), fiber.StatusInternalServerError)
 	}
