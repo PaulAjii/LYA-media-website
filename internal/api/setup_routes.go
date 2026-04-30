@@ -17,9 +17,6 @@ func SetupRoutes(app *fiber.App) {
 	}
 
 	r2Storage := storage.NewR2Storage()
-	if err != nil {
-		panic(err)
-	}
 
 	// albums route setup
 	albumsRepo := albums.NewRepository(pool)
