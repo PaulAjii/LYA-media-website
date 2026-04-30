@@ -71,13 +71,13 @@ func (r *TrackRepository) GetByAlbumID(ctx context.Context, albumID uuid.UUID) (
 	`
 	rows, err := r.db.Query(ctx, stmt, albumID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to execute query: %w", err)
+		return []dtos.TrackDTO{}, fmt.Errorf("failed to execute query: %w", err)
 	}
 	defer rows.Close()
 
 	tracks, err := pgx.CollectRows(rows, pgx.RowToStructByName[dtos.TrackDTO])
 	if err != nil {
-		return nil, fmt.Errorf("failed to collect rows: %w", err)
+		return []dtos.TrackDTO{}, fmt.Errorf("failed to collect rows: %w", err)
 	}
 
 	return tracks, nil
