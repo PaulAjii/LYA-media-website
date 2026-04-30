@@ -1,8 +1,6 @@
 package api
 
 import (
-	"os"
-
 	"github.com/PaulAjii/LYA-media-website/internal/albums"
 	"github.com/PaulAjii/LYA-media-website/internal/storage"
 	"github.com/PaulAjii/LYA-media-website/internal/tracks"
@@ -18,7 +16,7 @@ func SetupRoutes(app *fiber.App) {
 		panic(err)
 	}
 
-	supabaseStorage, err := storage.NewSupabaseStorage(os.Getenv("SUPABASE_URL"), os.Getenv("SUPABASE_SERVICE_ROLE_KEY"), os.Getenv("SUPABASE_BUCKET_NAME"))
+	r2Storage := storage.NewR2Storage()
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +29,7 @@ func SetupRoutes(app *fiber.App) {
 
 	// tracks route setup
 	tracksRepo := tracks.NewTrackRepository(pool)
-	tracksUsecase := tracks.NewUseCase(tracksRepo)
-	tracksHandler := tracks.NewHandler(tracksUsecase, supabaseStorage)
+	tracksUsecase := tracks.NewUseCase(tracksRepo, r2Storage)
+	tracksHandler := tracks.NewHandler(tracksUsecase, r2Storage)
 	tracks.SetupRoutes(api, tracksHandler)
 }
