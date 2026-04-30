@@ -43,7 +43,7 @@ func (h *ChoirMinistrationHandler) Create(c fiber.Ctx) error {
 		return response.Error(c, "ministration date is a required field", fiber.StatusBadRequest)
 	}
 
-	date, err := time.Parse(time.RFC1123, ministrationDate)
+	date, err := time.Parse(time.RFC3339, ministrationDate)
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (h *ChoirMinistrationHandler) Create(c fiber.Ctx) error {
 		return response.Error(c, "failed to open audio file", fiber.StatusBadRequest)
 	}
 
-	audioURL, err := h.storage.UploadFile(c.Context(), openedFile, file, fmt.Sprintf("choir_ministration/%s", ministrationDate), fileTitle)
+	audioURL, err := h.storage.UploadFile(c.Context(), openedFile, file, fmt.Sprintf("choir_ministrations/%s", ministrationDate), fileTitle)
 	if err != err {
 		return response.Error(c, fmt.Sprintf("failed to upload audio: %v", err), fiber.StatusInternalServerError)
 	}
