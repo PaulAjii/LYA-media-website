@@ -3,17 +3,20 @@ package tracks
 import (
 	"context"
 
+	"github.com/PaulAjii/LYA-media-website/internal/storage"
 	"github.com/PaulAjii/LYA-media-website/internal/tracks/dtos"
 	"github.com/google/uuid"
 )
 
 type TrackUseCase struct {
-	repo *TrackRepository
+	repo    *TrackRepository
+	storage *storage.R2Storage
 }
 
-func NewUseCase(repo *TrackRepository) *TrackUseCase {
+func NewUseCase(repo *TrackRepository, storage *storage.R2Storage) *TrackUseCase {
 	return &TrackUseCase{
-		repo: repo,
+		repo:    repo,
+		storage: storage,
 	}
 }
 
@@ -29,6 +32,16 @@ func (u *TrackUseCase) UpdateTrack(ctx context.Context, trackID uuid.UUID, paylo
 	return u.repo.UpdateTrack(ctx, trackID, payload)
 }
 
-func (u *TrackUseCase) DeleteTrack(ctx context.Context, trackID uuid.UUID) error {
-	return u.repo.DeleteTrack(ctx, trackID)
+func (u *TrackUseCase) DeleteTrack(ctx context.Context, trackID string) error {
+	track, err := u.repo.GetByID(ctx, trackID)
+	if err != nil {
+		return err
+	}
+
+	// Delete file from R2 Storage
+	err = u.storage.Delete(ctx, track.AudioURL)
+	if err != nil {
+		return err
+	}
+	return u.repo.Delete(ctx, trackID)
 }
