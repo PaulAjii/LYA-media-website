@@ -1,8 +1,10 @@
 package tracks
 
 import (
+	"fmt"
 	"strings"
 
+	"github.com/PaulAjii/LYA-media-website/internal/storage"
 	"github.com/PaulAjii/LYA-media-website/internal/tracks/dtos"
 	"github.com/PaulAjii/LYA-media-website/pkg/response"
 	"github.com/gofiber/fiber/v3"
@@ -10,27 +12,75 @@ import (
 )
 
 type TrackHandler struct {
-	u *TrackUseCase
+	u       *TrackUseCase
+	storage *storage.SupabaseStorage
 }
 
-func NewHandler(u *TrackUseCase) *TrackHandler {
+func NewHandler(u *TrackUseCase, storage *storage.SupabaseStorage) *TrackHandler {
 	return &TrackHandler{
-		u: u,
+		u:       u,
+		storage: storage,
 	}
 }
 
+// CreateTrack handles multipart form upload with audio file
 func (h *TrackHandler) CreateTrack(c fiber.Ctx) error {
-	var payload dtos.CreateTrackDTO
-	if err := c.Bind().Body(&payload); err != nil {
-		return response.Error(c, err.Error(), fiber.StatusBadRequest)
+	// Parse form data
+	albumIDStr := c.FormValue("albumId")
+	if albumIDStr == "" {
+		return response.Error(c, "albumId is required", fiber.StatusBadRequest)
 	}
 
-	if payload.Title == "" || payload.AlbumID == uuid.Nil || payload.AudioURL == "" {
-		return response.Error(c, "title, album ID, and audio URL are required", fiber.StatusBadRequest)
+	albumID, err := uuid.Parse(albumIDStr)
+	if err != nil {
+		return response.Error(c, "invalid albumId format", fiber.StatusBadRequest)
 	}
 
-	if payload.TrackNumber <= 0 {
-		payload.TrackNumber = 1
+	albumTitle := c.FormValue("albumTitle")
+	if albumTitle == "" {
+		return response.Error(c, "albumTitle is required", fiber.StatusBadRequest)
+	}
+
+	title := c.FormValue("title")
+	if title == "" {
+		return response.Error(c, "title is required", fiber.StatusBadRequest)
+	}
+
+	trackNumberStr := c.FormValue("trackNumber")
+	trackNumber := 1
+	if trackNumberStr != "" {
+		trackNumber = parseInt(trackNumberStr, 1)
+	}
+
+	// Get uploaded file
+	file, err := c.FormFile("audio")
+	if err != nil {
+		return response.Error(c, "audio file is required", fiber.StatusBadRequest)
+	}
+
+	// Track title
+	fileTitle := albumTitle + " - " + title + " " + trackNumberStr
+
+	// Open the file
+	openedFile, err := file.Open()
+	if err != nil {
+		return response.Error(c, "failed to open audio file", fiber.StatusBadRequest)
+	}
+	defer openedFile.Close()
+
+	// Upload to Supabase Storage
+	audioURL, err := h.storage.UploadFile(c.Context(), openedFile, file, fmt.Sprintf("tracks/%s", albumTitle), fileTitle)
+	if err != nil {
+		return response.Error(c, fmt.Sprintf("failed to upload audio: %v", err), fiber.StatusInternalServerError)
+	}
+
+	// Create track with the uploaded URL
+	payload := dtos.CreateTrackDTO{
+		AlbumID:     albumID,
+		AlbumTitle:  albumTitle,
+		Title:       title,
+		TrackNumber: trackNumber,
+		AudioURL:    audioURL,
 	}
 
 	track, err := h.u.Create(c.Context(), payload)
@@ -39,6 +89,15 @@ func (h *TrackHandler) CreateTrack(c fiber.Ctx) error {
 	}
 
 	return response.Success(c, "Track created successfully", track, fiber.StatusCreated)
+}
+
+func parseInt(s string, defaultValue int) int {
+	var result int
+	fmt.Sscanf(s, "%d", &result)
+	if result == 0 {
+		return defaultValue
+	}
+	return result
 }
 
 func (h *TrackHandler) GetTracksByAlbumID(c fiber.Ctx) error {
