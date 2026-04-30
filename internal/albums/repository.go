@@ -105,12 +105,13 @@ func (r *AlbumRepository) GetAlbumByID(ctx context.Context, id uuid.UUID) (dtos.
 // Get Album by Title
 func (r *AlbumRepository) GetAlbumByTitle(ctx context.Context, title string) ([]dtos.Album, error) {
 	stmt := `
-		SELECT
-			id, title, date, summary, thumbnail_url, created_at
-		FROM albums
-		WHERE title ILIKE $1 ORDER BY date DESC
+		SELECT DISTINCT
+			a.id, a.title, a.date, a.summary, a.thumbnail_url, a.created_at
+		FROM albums a
+		LEFT JOIN tracks t ON a.id = t.album_id
+		WHERE a.title ILIKE $1 OR t.title ILIKE $2 ORDER BY a.date DESC
 	`
-	rows, err := r.db.Query(ctx, stmt, "%"+title+"%")
+	rows, err := r.db.Query(ctx, stmt, "%"+title+"%", "%"+title+"%")
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
