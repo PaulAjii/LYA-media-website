@@ -1,6 +1,6 @@
 ![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?style=for-the-badge&logo=go)
 ![Fiber](https://img.shields.io/badge/Fiber-v3-white?style=for-the-badge&logo=go)
-![R2 Storage](https://img.shields.io/badge/R2-Storage-orange)
+![Cloudflare R2 Storage](https://img.shields.io/badge/R2-Storage-orange)
 [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 
 # LYA Media Website
