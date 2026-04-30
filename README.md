@@ -1,11 +1,11 @@
 ![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?style=for-the-badge&logo=go)
 ![Fiber](https://img.shields.io/badge/Fiber-v3-white?style=for-the-badge&logo=go)
-![Supabase](https://img.shields.io/badge/Supabase-Storage-3ECF8E?style=for-the-badge&logo=supabase)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql)
+![R2 Storage](https://img.shields.io/badge/R2-Storage-orange)
+[![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 
 # LYA Media Website
 
-A modern, RESTful media management API built with Go, Fiber, PostgreSQL, and Supabase Storage for managing albums and audio tracks with secure file uploads.
+A modern, RESTful media management API built with Go, Fiber, PostgreSQL, and Cloudflare R2 Storage for managing church teachings, choir ministrations and worship sessions.
 
 ## 📋 Table of Contents
 
@@ -26,11 +26,13 @@ A modern, RESTful media management API built with Go, Fiber, PostgreSQL, and Sup
 
 LYA Media Website is a backend API service that provides comprehensive media management capabilities for audio content. It follows clean architecture principles with clear separation of concerns, making it maintainable, testable, and scalable.
 
-The API supports full CRUD operations for albums and tracks, with integrated Supabase Storage for secure and efficient audio file management.
+The API supports full CRUD operations for sermons in albums and tracks segregations, choir ministrations, and worship sessions with integrated Cloudflare R2 Storage for secure and efficient audio file management.
 
 ## ✨ Features
 
-### Album Management
+### Sermon Recordings
+
+#### Album Management
 - ✅ Create albums with title, date, summary, and thumbnail
 - ✅ Retrieve all albums with pagination support
 - ✅ Get album by ID with associated tracks
@@ -38,7 +40,7 @@ The API supports full CRUD operations for albums and tracks, with integrated Sup
 - ✅ Update album information
 - ✅ Delete albums (with cascade track deletion)
 
-### Track Management
+### #Track Management
 - ✅ Upload audio files (MP3, WAV, M4A, FLAC, OGG, WEBM) up to 50MB
 - ✅ Create tracks with automatic upload to Supabase Storage
 - ✅ Retrieve tracks by album ID with ordered track listing
@@ -49,7 +51,7 @@ The API supports full CRUD operations for albums and tracks, with integrated Sup
 ### Technical Features
 - ✅ Clean Architecture (Handlers → UseCases → Repositories)
 - ✅ PostgreSQL database with connection pooling
-- ✅ Supabase Storage integration for audio files
+- ✅ Cloudflare R2 Storage integration for audio files
 - ✅ UUID primary keys for security
 - ✅ CORS support for web clients
 - ✅ Request logging and error handling
@@ -64,23 +66,22 @@ This project implements **Clean Architecture** principles:
 ```
 ┌─────────────────────────────────────────┐
 │              API Layer                  │
-│         (Handlers - fiber.Router)      │
+│         (Handlers - fiber.Router)       │
 └─────────────────┬───────────────────────┘
                   ↓
 ┌─────────────────────────────────────────┐
 │         Use Cases Layer                 │
-│      (Business Logic - UseCases)       │
+│      (Business Logic - UseCases)        │
 └─────────────────┬───────────────────────┘
                   ↓
 ┌─────────────────────────────────────────┐
 │       Repository Layer                  │
-│   (Data Access - Repositories)         │
+│   (Data Access - Repositories)          │
 └─────────────────┬───────────────────────┘
                   ↓
 ┌─────────────────────────────────────────┐
 │      Infrastructure Layer               │
-│ (DB, Storage, Config - PostgreSQL,     │
-│  Supabase, Environment)                │
+│ (DB, Storage, │ Supabase, Environment)  │
 └─────────────────────────────────────────┘
 ```
 
@@ -91,7 +92,7 @@ HTTP Request → Handler → UseCase → Repository → Database/Storage
      ↓           ↓         ↓           ↓             ↓
    Router  →  DTO  →  Entity  →   Entity       PostgreSQL
                                     ↓
-                              Supabase Storage
+                            Cloudflare R2 Storage
 ```
 
 ## 🛠️ Tech Stack
@@ -102,13 +103,12 @@ HTTP Request → Handler → UseCase → Repository → Database/Storage
 - **[pgx/v5](https://github.com/jackc/pgx)** - PostgreSQL driver and toolkit
 
 ### Database & Storage
-- **[PostgreSQL](https://www.postgresql.org/)** - Relational database
-- **[Supabase](https://supabase.com/)** - Storage for audio files
+- **[Supabase](https://supabase.com/)** - Database
+- **[Cloudflare R2](https://www.cloudflare.com/en-gb/developer-platform/products/r2/)** - Storage for audio media
 - **[UUID](https://github.com/google/uuid)** - UUID generation
 
 ### Utilities
 - **[godotenv](https://github.com/joho/godotenv)** - Environment configuration
-- **[validator](https://github.com/go-playground/validator)** - (Implied validation)
 
 ### Development
 - Built for production with connection pooling
@@ -138,10 +138,15 @@ LYA-media-website/
 │   │   ├── repository.go
 │   │   ├── router.go
 │   │   ├── usecase.go
-│   │   └── usecase_test.go
-│   ├── storage/                 # Supabase Storage
-│   │   ├── supabase.go         # Storage operations
-│   │   └── config.go           # Storage configuration
+│   ├── choir_ministration/                  # Choir ministration domain
+│   │   ├── dtos/
+│   │   │   └── ministration_dtos.go
+│   │   ├── handler.go
+│   │   ├── repository.go
+│   │   ├── router.go
+│   │   ├── usecase.go
+│   ├── storage/                 # R2 Storage
+│   │   ├── r2.go        # Storage config and handler methods
 │   └── api/
 │       └── setup_routes.go      # Route initialization
 ├── pkg/
@@ -158,9 +163,9 @@ LYA-media-website/
 ## 🔧 Prerequisites
 
 - Go 1.21 or higher
-- PostgreSQL 14+
-- Supabase account (for storage)
+- Supabase account (for cloud database)
 - Git
+- Cloudflare R2 account (for storage)
 
 ## ⚙️ Installation
 
@@ -192,12 +197,15 @@ Or create manually:
 PORT=8080
 
 # Database Configuration
-DATABASE_URL=postgresql://username:password@localhost:5432/lyamedia
+DATABASE_PASSWORD=your-db-password
+DATABASE_URL=postgresql://postgres.projectID:${DATABASE_PASSWORD}@db-host:db-port/postgres
 
-# Supabase Configuration
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
-SUPABASE_BUCKET_NAME=audio
+# R2 CONFIGURATION
+R2_ACCOUNT_ID=R2_ACCOUNT_ID
+R2_ACCESS_KEY_ID=R2_ACCESS_KEY_ID
+R2_SECRET_ACCESS_KEY=R2_SECRET_ACCESS_KEY
+R2_BUCKET_NAME=R2_BUCKET_NAME
+R2_PUBLIC_URL=R2_PUBLIC_URL
 ```
 
 ### 4. Database Setup
@@ -205,43 +213,73 @@ SUPABASE_BUCKET_NAME=audio
 Create the database tables:
 
 ```sql
--- Albums table
-CREATE TABLE albums (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(255) NOT NULL,
-    date TIMESTAMP NOT NULL,
-    summary TEXT,
-    thumbnail_url VARCHAR(500),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Albums Table
+CREATE TABLE albums(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  date DATE NOT NULL,
+  summary TEXT,
+  thumbnail_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_album_title ON albums(title);
+CREATE INDEX idx_album_date ON albums(date);
+
+-- Tracks Table
+CREATE TABLE tracks(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  album_id UUID NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  track_number INT NOT NULL,
+  audio_url TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_album_id ON tracks(album_id);
+
+-- Choir Ministrations table
+CREATE TABLE choir_ministrations(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  song_title TEXT NOT NULL,
+  date DATE NOT NULL,
+  songwriter TEXT,
+  lyrics TEXT,
+  audio_url TEXT NOT NULL,
+  thumbnail_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_choir_date ON choir_ministrations(date);
+CREATE INDEX idx_choir_song ON choir_ministrations(song_title);
+
+-- Worship Sessions table
+CREATE TABLE worship_sessions(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  date DATE NOT NULL,
+  worship_leader TEXT NOT NULL,
+  thumbnail_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_worship_leader ON worship_sessions(worship_leader);
+CREATE INDEX idx_worship_date ON worship_sessions(date);
+
+-- Worship Songs Table
+CREATE TABLE worship_songs(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id UUID NOT NULL REFERENCES worship_sessions(id) ON DELETE CASCADE,
+  song_title TEXT NOT NULL,
+  lyrics TEXT,
+  song_order INT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Tracks table
-CREATE TABLE tracks (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    album_id UUID NOT NULL REFERENCES albums(id) ON DELETE CASCADE,
-    title VARCHAR(255) NOT NULL,
-    track_number INTEGER NOT NULL,
-    audio_url VARCHAR(500) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Worship Backup Singers Table
+CREATE TABLE worship_backup_singers(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id UUID NOT NULL REFERENCES worship_sessions(id) ON DELETE CASCADE,
+  name TEXT NOT NULL
 );
-
--- Indexes for performance
-CREATE INDEX idx_tracks_album_id ON tracks(album_id);
-CREATE INDEX idx_tracks_track_number ON tracks(track_number);
-CREATE INDEX idx_albums_created_at ON albums(created_at DESC);
 ```
 
-### 5. Supabase Storage Setup
-
-1. Create a Supabase project at [supabase.com](https://supabase.com)
-2. Create a new bucket called `audio`
-3. Set bucket permissions to "public" for serving audio files:
-   - Go to Storage → Buckets → audio → Edit Permissions
-   - Add policy: `create` for authenticated users
-   - Add policy: `read` for public access
-   - Add policy: `delete` for authenticated users
-
-4. Get your Service Role Key from: Project Settings → API → Service Role Key
+### 5. Cloudflare R2 Storage Setup
 
 ### 6. Run the application
 
@@ -253,7 +291,7 @@ Or using Air for live reloading:
 
 ```bash
 # Install Air
-go install github.com/cosmtrek/air@latest
+go install github.com/air-verse/air@latest
 
 # Run with Air
 air
@@ -306,7 +344,8 @@ Response: 201 Created
     "summary": "A collection of summer hits",
     "thumbnail_url": "https://example.com/thumbnail.jpg",
     "created_at": "2024-06-01T00:00:00Z"
-  }
+  },
+  "statusCode": 201,
 }
 ```
 
@@ -327,8 +366,10 @@ Response: 200 OK
       "summary": "A collection of summer hits",
       "thumbnail_url": "https://example.com/thumbnail.jpg",
       "created_at": "2024-06-01T00:00:00Z"
-    }
-  ]
+    },
+    {...},
+  ],
+  "statusCode": 200,
 }
 ```
 
@@ -342,14 +383,12 @@ Response: 200 OK
   "status": "success",
   "message": "Album retrieved successfully",
   "data": {
-    "album": {
-      "id": "uuid",
-      "title": "Summer Vibes",
-      "date": "2024-06-01T00:00:00Z",
-      "summary": "A collection of summer hits",
-      "thumbnail_url": "https://example.com/thumbnail.jpg",
-      "created_at": "2024-06-01T00:00:00Z"
-    },
+    "id": "uuid",
+    "title": "Summer Vibes",
+    "date": "2024-06-01T00:00:00Z",
+    "summary": "A collection of summer hits",
+    "thumbnail_url": "https://example.com/thumbnail.jpg",
+    "created_at": "2024-06-01T00:00:00Z",
     "tracks": [
       {
         "id": "uuid",
@@ -358,22 +397,25 @@ Response: 200 OK
         "trackNumber": 1,
         "audioUrl": "https://supabase.co/storage/v1/object/public/audio/tracks/track1.mp3",
         "createdAt": "2024-06-01T00:00:00Z"
-      }
-    ]
-  }
+      },
+      {...},
+    ],
+  },
+  "statusCode": 200,
 }
 ```
 
 #### Search Albums by Title
 
 ```http
-GET /api/v1/albums/search/:title
+GET /api/v1/albums/search?title
 
 Response: 200 OK
 {
   "status": "success",
   "message": "Albums retrieved successfully",
-  "data": [...]
+  "data": [...],
+  "statusCode": 200,
 }
 ```
 
@@ -391,7 +433,16 @@ Content-Type: application/json
 Response: 200 OK
 {
   "status": "success",
-  "message": "Album updated successfully"
+  "message": "Album updated successfully",
+  "data": {
+    "id": "uuid",
+    "title": "Updated Title",
+    "date": "0001-01-01T00:00:00Z",
+    "summary": "Updated summary",
+    "thumbnail_url": null,
+    "createdAt": "0001-01-01T00:00:00Z"
+  },
+  "statusCode": 200
 }
 ```
 
@@ -427,9 +478,10 @@ Response: 201 Created
     "albumId": "uuid",
     "title": "Track 1",
     "trackNumber": 1,
-    "audioUrl": "https://supabase.co/storage/v1/object/public/audio/tracks/AlbumTitle/Track1.mp3",
-    "createdAt": "2024-06-01T00:00:00Z"
-  }
+    "audioUrl": "https://public-url.r2.dev/tracks/Album Title/Album Title - Track 1 - Track Title.mp3",
+    "createdAt": "0001-00-00T00:00:00Z"
+  },
+  "statusCode": 201,
 }
 ```
 
@@ -441,17 +493,19 @@ GET /api/v1/tracks/album/:albumID
 Response: 200 OK
 {
   "status": "success",
-  "message": "Tracks retrieved successfully",
+  "message": "Tracks fetched successfully",
   "data": [
     {
       "id": "uuid",
       "albumId": "uuid",
       "title": "Track 1",
       "trackNumber": 1,
-      "audioUrl": "https://supabase.co/storage/v1/object/public/audio/tracks/AlbumTitle/Track1.mp3",
-      "createdAt": "2024-06-01T00:00:00Z"
-    }
-  ]
+      "audioUrl": "https://public-url.r2.dev/tracks/Album Title/Album Title - Track 1 - Track Title.mp3",
+      "createdAt": "0001-00-00T00:00:00Z"
+    },
+    {...},
+  ],
+  "statusCode": 200,
 }
 ```
 
@@ -530,71 +584,15 @@ CREATE TABLE tracks (
 - **OGG** (`audio/ogg`) - Open format, good compression
 - **WEBM** (`audio/webm`) - Web-optimized format
 
-### File Storage Organization
-
-Files are stored in Supabase Storage with the following structure:
-
-```
-{bucket}/
-└── {albumTitle}/
-    └── {trackTitle}{extension}
-
-Example:
-audio/
-└── Summer Vibes/
-    └── Track 1.mp3
-```
-
 ### Upload Process
 
 1. Client sends `multipart/form-data` with track info and audio file
 2. Server validates file type and size (< 50MB)
 3. Server sanitizes filename and creates unique path
-4. Server uploads to Supabase Storage at `/tracks/{albumTitle}/{trackTitle}.mp3`
-5. Supabase returns public URL
-6. Server stores track metadata (including audio URL) in PostgreSQL
+4. Server uploads to Cloudflare R2 Storage at `/tracks/{albumTitle}/{trackTitle}.mp3`
+5. R2 returns public URL
+6. Server stores track metadata (including audio URL) in Supabase PostgreSQL database
 7. Response returns track object with public URL for streaming
-
-## 🐳 Docker Support
-
-### Build and run with Docker
-
-```bash
-# Build image
-docker build -t lya-media-api .
-
-# Run container
-docker run -p 8080:8080 --env-file .env lya-media-api
-```
-
-### Docker Compose
-
-```yaml
-version: '3.8'
-
-services:
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    env_file:
-      - .env
-    restart: unless-stopped
-```
-
-## 🧪 Testing
-
-Run tests:
-
-```bash
-go test ./...
-```
-
-Run tests with coverage:
-
-```bash
-go test -cover ./...
-```
 
 ## 🤝 Contributing
 
@@ -623,7 +621,7 @@ go test -cover ./...
 - Indexed timestamps for chronological queries
 
 ### Storage
-- Audio files served directly from Supabase CDN
+- Audio files served directly from Cloudflare R2 CDN
 - Public URLs enable caching and efficient delivery
 - 50MB file size limit prevents abuse while supporting high-quality audio
 
@@ -635,7 +633,6 @@ go test -cover ./...
 ## 🛡️ Security
 
 - UUIDs instead of sequential IDs prevent enumeration
-- Supabase service role key securely stored in environment
 - File type validation prevents malicious uploads
 - CORS configured for specific origins
 - File size limits prevent DoS attacks
