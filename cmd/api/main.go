@@ -28,7 +28,8 @@ func main() {
 	log.Println("Connected to the database successfully")
 
 	app := fiber.New(fiber.Config{
-		AppName: "LYA Media Website",
+		AppName:   "LYA Media Website",
+		BodyLimit: 50 * 1024 * 1024,
 	})
 
 	allowedOrigins := "*"
