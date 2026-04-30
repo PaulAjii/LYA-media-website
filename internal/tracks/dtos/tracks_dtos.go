@@ -17,10 +17,19 @@ type TrackDTO struct {
 
 type CreateTrackDTO struct {
 	AlbumID     uuid.UUID `json:"albumId" validate:"required"`
+	AlbumTitle  string    `json:"albumTitle" validate:"required"`
 	Title       string    `json:"title" validate:"required"`
 	TrackNumber int       `json:"trackNumber" validate:"required"`
 	AudioURL    string    `json:"audioUrl" validate:"required,url"`
 }
+
+// CreateTrackWithFileDTO is used for multipart form uploads
+// type CreateTrackWithFileDTO struct {
+// 	AlbumID     uuid.UUID `form:"albumId" validate:"required"`
+// 	AlbumTitle  string    `form:"albumTitle" validate:"required"`
+// 	Title       string    `form:"title" validate:"required"`
+// 	TrackNumber int       `form:"trackNumber" validate:"required"`
+// }
 
 type UpdateTrackDTO struct {
 	Title       *string `json:"title,omitempty"`
