@@ -69,7 +69,7 @@ func (h *TrackHandler) CreateTrack(c fiber.Ctx) error {
 	defer openedFile.Close()
 
 	// Upload to R2 Storage
-	audioURL, err := h.storage.UploadFile(c.Context(), openedFile, file, fmt.Sprintf("tracks/%s", albumTitle), trackTitle)
+	audioURL, err := h.storage.UploadFile(c.Context(), openedFile, file, fmt.Sprintf("teachings/%s", albumTitle), trackTitle)
 	if err != nil {
 		return response.Error(c, fmt.Sprintf("failed to upload audio: %v", err), fiber.StatusInternalServerError)
 	}
