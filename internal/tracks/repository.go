@@ -42,6 +42,26 @@ func (r *TrackRepository) Create(ctx context.Context, payload dtos.CreateTrackDT
 	return &track, nil
 }
 
+func (r *TrackRepository) GetByID(ctx context.Context, id string) (*dtos.TrackDTO, error) {
+	stmt := `
+		SELECT id, album_id, title, track_number, audio_url, created_at
+		FROM tracks
+		WHERE id = $1
+	`
+	rows, err := r.db.Query(ctx, stmt, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+	defer rows.Close()
+
+	track, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[dtos.TrackDTO])
+	if err != nil {
+		return nil, fmt.Errorf("failed to collect row: %w", err)
+	}
+
+	return &track, nil
+}
+
 func (r *TrackRepository) GetByAlbumID(ctx context.Context, albumID uuid.UUID) ([]dtos.TrackDTO, error) {
 	stmt := `
 		SELECT id, album_id, title, track_number, audio_url, created_at
@@ -87,7 +107,7 @@ func (r *TrackRepository) UpdateTrack(ctx context.Context, id uuid.UUID, payload
 	return &upadtedTrack, nil
 }
 
-func (r *TrackRepository) DeleteTrack(ctx context.Context, id uuid.UUID) error {
+func (r *TrackRepository) Delete(ctx context.Context, id string) error {
 	stmt := `
 		DELETE FROM tracks
 		WHERE id = $1
