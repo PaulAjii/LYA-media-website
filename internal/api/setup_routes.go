@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/PaulAjii/LYA-media-website/internal/albums"
+	cm "github.com/PaulAjii/LYA-media-website/internal/choir_ministration"
 	"github.com/PaulAjii/LYA-media-website/internal/storage"
 	"github.com/PaulAjii/LYA-media-website/internal/tracks"
 	"github.com/PaulAjii/LYA-media-website/pkg/db"
@@ -29,4 +30,10 @@ func SetupRoutes(app *fiber.App) {
 	tracksUsecase := tracks.NewUseCase(tracksRepo, r2Storage)
 	tracksHandler := tracks.NewHandler(tracksUsecase, r2Storage)
 	tracks.SetupRoutes(api, tracksHandler)
+
+	// choir ministration route setup
+	cmRepo := cm.NewChoirMinistrationRepo(pool)
+	cmUsecase := cm.NewChoirMinistrationUseCase(cmRepo)
+	cmHandler := cm.NewChoirMinistrationHandler(cmUsecase, r2Storage)
+	cm.SetupRoutes(api, cmHandler)
 }
