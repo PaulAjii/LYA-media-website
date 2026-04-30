@@ -53,13 +53,13 @@ func (r *AlbumRepository) GetAlbums(ctx context.Context) ([]dtos.Album, error) {
 	`
 	rows, err := r.db.Query(ctx, stmt)
 	if err != nil {
-		return nil, fmt.Errorf("failed to execute query: %w", err)
+		return []dtos.Album{}, fmt.Errorf("failed to execute query: %w", err)
 	}
 	defer rows.Close()
 
 	albums, err := pgx.CollectRows(rows, pgx.RowToStructByName[dtos.Album])
 	if err != nil {
-		return nil, fmt.Errorf("failed to collect albums: %w", err)
+		return []dtos.Album{}, fmt.Errorf("failed to collect albums: %w", err)
 	}
 
 	return albums, nil
@@ -113,13 +113,13 @@ func (r *AlbumRepository) GetAlbumByTitle(ctx context.Context, title string) ([]
 	`
 	rows, err := r.db.Query(ctx, stmt, "%"+title+"%", "%"+title+"%")
 	if err != nil {
-		return nil, fmt.Errorf("failed to execute query: %w", err)
+		return []dtos.Album{}, fmt.Errorf("failed to execute query: %w", err)
 	}
 	defer rows.Close()
 
 	albums, err := pgx.CollectRows(rows, pgx.RowToStructByName[dtos.Album])
 	if err != nil {
-		return nil, fmt.Errorf("failed to collect albums: %w", err)
+		return []dtos.Album{}, fmt.Errorf("failed to collect albums: %w", err)
 	}
 
 	return albums, nil
