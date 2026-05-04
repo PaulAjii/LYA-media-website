@@ -31,6 +31,11 @@
                         </p>
                     </div>
                 </div>
+
+                <div v-if="store.currentSong.lyrics" class="mb-6">
+                    <span class="text-xs text-gray-600">LYRICS</span>
+                    <p>{{ store.currentSong.lyrics }}</p>
+                </div>
             </div>
 
             <p v-else class="text-gray-500 text-sm w-full text-center">No song yet.</p>
