@@ -34,7 +34,7 @@
 
                 <div v-if="store.currentSong.lyrics" class="mt-10">
                     <span class="text-xs text-gray-600">LYRICS</span>
-                    <p class="mt-3 text-gray-700" v-html="parsedLyrics" />
+                    <p class="mt-3 text-gray-700 text-sm md:text-md" v-html="parsedLyrics" />
                 </div>
             </div>
 
