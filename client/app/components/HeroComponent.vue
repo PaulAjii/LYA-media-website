@@ -13,7 +13,7 @@
                 LOYOLA YOUTH ASSEMBLY
             </span>
             <p
-                class="w-md uppercase text-gray-300 font-black font-oswald text-4xl flex items-center justify-center flex-col gap-2 mt-2 sm:text:6xl sm:w-l md:w-3xl md:text-8xl">
+                class="w-md uppercase text-gray-300 font-black font-oswald text-5xl flex items-center justify-center flex-col gap-2 mt-2 sm:text:6xl sm:w-l md:w-3xl md:text-8xl">
                 <span class="text-blue-700">caring</span>
                 <span>for</span>
                 <span class="text-blue-700">the whole man</span>
