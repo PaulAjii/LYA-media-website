@@ -32,9 +32,9 @@
                     </div>
                 </div>
 
-                <div v-if="store.currentSong.lyrics" class="mb-6">
+                <div v-if="store.currentSong.lyrics" class="mt-10">
                     <span class="text-xs text-gray-600">LYRICS</span>
-                    <p>{{ store.currentSong.lyrics }}</p>
+                    <p class="mt-3 text-gray-700" v-html="parsedLyrics" />
                 </div>
             </div>
 
@@ -55,6 +55,12 @@ const playerStore = usePlayerStore()
 const { fetchChoirMinistrationById } = useChoirMinistrationsService()
 const route = useRoute()
 const id = route.params.id as string
+
+const parsedLyrics = computed(() => {
+    if (!store.currentSong?.lyrics) return ""
+
+    return store.currentSong?.lyrics?.replace(/\n/g, "<br />")
+})
 
 function formatDate(date: string) {
     return new Date(date).toLocaleDateString('en-NG', {
