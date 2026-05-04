@@ -3,11 +3,12 @@
         <img src="../assets/images/logo_use.png" alt="Logo" :class="[
             'w-15 h-15 object-cover transition-all duration-300',
         ]" />
-        <div v-if="isTransparent" class="flex flex-col gap-0.5 text-xs font-logo text-white/80 hover:text-white">
+        <div v-if="isOpen && isTransparent"
+            class="flex flex-col gap-0.5 text-xs font-logo text-gray-700 hover:text-black">
             <span>Loyola Youth Assembly (LYA)</span>
             <span>CAC Oke Alaafia, Loyola, Ibadan</span>
         </div>
-        <div v-else-if="isOpen" class="flex flex-col gap-0.5 text-xs font-logo text-gray-700 hover:text-black">
+        <div v-else-if="isTransparent" class="flex flex-col gap-0.5 text-xs font-logo text-white/80 hover:text-white">
             <span>Loyola Youth Assembly (LYA)</span>
             <span>CAC Oke Alaafia, Loyola, Ibadan</span>
         </div>
