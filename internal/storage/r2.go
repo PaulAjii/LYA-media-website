@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"mime/multipart"
+	"net/url"
 	"os"
 	"path/filepath"
 
@@ -66,7 +67,9 @@ func (s *R2Storage) UploadFile(ctx context.Context, file multipart.File, header 
 		return "", fmt.Errorf("failed to upload file: %w", err)
 	}
 
-	publicURL := fmt.Sprintf("%s/%s", s.publicURL, key)
+	encodedKey := url.PathEscape(key)
+
+	publicURL := fmt.Sprintf("%s/%s", s.publicURL, encodedKey)
 	return publicURL, nil
 }
 
