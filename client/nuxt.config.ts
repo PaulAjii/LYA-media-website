@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   $production: {
     runtimeConfig: {
       public: {
-        apiUrl: "my-api-url"
+        apiUrl: "https://lya-media-website-production.up.railway.app"
       }
     }
   },
