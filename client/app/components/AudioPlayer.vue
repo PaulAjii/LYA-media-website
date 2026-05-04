@@ -147,7 +147,6 @@ async function downloadSong() {
     const res = await fetch(player.currentSong?.audioURL)
     const blob = await res.blob()
     const blobURL = URL.createObjectURL(blob)
-    console.log(blobURL)
     const a = document.createElement('a')
     a.href = blobURL
     a.download = player.currentSong.songTitle
