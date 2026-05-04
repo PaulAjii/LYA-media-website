@@ -13,11 +13,11 @@ import (
 )
 
 type DataWitPagination struct {
-	Data       interface{}
-	Count      int
-	TotalCount int
-	Limit      int
-	Offset     int
+	Data       interface{} `json:"pagedData"`
+	Count      int         `json:"count"`
+	TotalCount int         `json:"totalCount"`
+	Limit      int         `json:"limit"`
+	Offset     int         `json:"offset"`
 }
 
 type ChoirMinistrationHandler struct {
