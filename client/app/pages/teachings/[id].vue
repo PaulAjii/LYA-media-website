@@ -9,12 +9,12 @@
         </header>
 
         <section class="mt-6 font-montserrat sm:mt-8">
-            <div v-if="store.loading" class="text-gray-400 text-sm w-full text-center">Loading...</div>
+            <p v-if="store.loading" class="text-gray-400 text-sm w-full text-center">Loading...</p>
             <div v-else-if="store.currentAlbum && store.currentAlbum.tracks.length > 0">
                 <div class="flex items-center justify-between">
                     <span class="text-sm font-bold text-gray-500">TRACKS</span>
                     <span class="text-sm font-bold text-gray-500">TOTAL TRACKS: {{ store.currentAlbum.tracks.length
-                        }}</span>
+                    }}</span>
                 </div>
 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-3">
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         <h3 class="font-semibold text-gray-800 text-sm truncate">{{ track.title }} {{ track.trackNumber
-                            }}</h3>
+                        }}</h3>
                         <p class="text-gray-400 text-xs mt-1">Uploaded on: {{ formatDate(track.createdAt) }}</p>
                     </div>
                 </div>

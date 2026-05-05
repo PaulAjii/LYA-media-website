@@ -19,7 +19,7 @@
         </header>
 
         <section class="mt-12 font-montserrat">
-            <div v-if="store.loading" class="text-gray-400 text-sm text-center">Loading...</div>
+            <p v-if="store.loading" class="text-gray-400 text-sm text-center w-full">Loading...</p>
 
             <div v-else-if="store.albums && store.albums.length > 0"
                 class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

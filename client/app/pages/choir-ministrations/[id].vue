@@ -9,7 +9,7 @@
         </header>
 
         <section class="mt-6 font-montserrat sm:mt-8">
-            <div v-if="store.loading" class="text-gray-400 text-sm w-full text-center">Loading...</div>
+            <p v-if="store.loading" class="text-gray-400 text-sm w-full text-center">Loading...</p>
             <div v-else-if="store.currentSong">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-gray-500">SONG</span>
