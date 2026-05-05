@@ -30,14 +30,14 @@
                         <img v-if="song.thumbnailURL" :src="song.thumbnailURL" :alt="song.songTitle"
                             class="w-full h-full object-cover" />
                         <div v-else class="w-full h-full flex items-center justify-center text-gray-500 text-sm">
-                            <PhMusicNote size="150" weight="thin" />
+                            <PhFolder size="150" weight="thin" />
                         </div>
                     </div>
                     <div class="flex justify-between items-center">
                         <h3 class="font-semibold text-gray-800 text-sm truncate">{{ song.songTitle }}</h3>
                         <p class="text-xs text-gray-500 truncate">Song Writer: {{ song.songWriter }}</p>
                     </div>
-                    <p class="text-gray-400 text-xs mt-1">{{ formatDate(song.date) }}</p>
+                    <p class="text-gray-400 text-xs mt-1">Ministered on: {{ formatDate(song.date) }}</p>
                     <p class="text-gray-400 text-xs mt-1">Uploaded on: {{ formatDate(song.createdAt) }}</p>
                 </NuxtLink>
             </div>
@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { PhMagnifyingGlass, PhMusicNote } from '@phosphor-icons/vue'
+import { PhFolder, PhMagnifyingGlass } from '@phosphor-icons/vue'
 import { useChoirMinistrationsService } from '~/services/choir-ministrations'
 const { setLight } = useHeaderTheme()
 

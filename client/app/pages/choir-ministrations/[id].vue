@@ -13,7 +13,7 @@
             <div v-else-if="store.currentSong">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-gray-500">SONG</span>
-                    <span class="text-xs font-bold text-gray-500">SONG WRITER: {{ store.currentSong.songWriter }}</span>
+                    <span class="text-xs font-bold text-gray-500">Song Writer: {{ store.currentSong.songWriter }}</span>
                 </div>
 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-3">
