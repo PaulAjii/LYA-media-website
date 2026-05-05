@@ -29,7 +29,7 @@
                         <img v-if="album.thumbnail_url" :src="album.thumbnail_url" :alt="album.title"
                             class="w-full h-full object-cover" />
                         <div v-else class="w-full h-full flex items-center justify-center text-gray-500 text-sm">
-                            <PhMusicNote size="150" weight="thin" />
+                            <PhFolder size="150" weight="thin" />
                         </div>
                     </div>
                     <h3 class="font-semibold text-gray-800 text-sm truncate">{{ album.title }}</h3>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { PhMagnifyingGlass, PhMusicNote } from '@phosphor-icons/vue';
+import { PhFolder, PhMagnifyingGlass } from '@phosphor-icons/vue';
 import { useTeachingsService } from '~/services/teaching';
 
 const { setLight } = useHeaderTheme()
