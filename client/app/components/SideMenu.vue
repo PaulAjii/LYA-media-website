@@ -26,6 +26,12 @@
                     CHOIR-MINISTRATIONS
                 </NuxtLink>
             </li>
+            <li>
+                <NuxtLink to="/worship-sessions" @click="closeSideMenu"
+                    :class="route.path === '/worship-sessions' ? 'text-blue-700' : 'text-gray-600 hover:text-gray-900'">
+                    CHOIR-MINISTRATIONS
+                </NuxtLink>
+            </li>
         </ul>
 
         <div class="px-8">
