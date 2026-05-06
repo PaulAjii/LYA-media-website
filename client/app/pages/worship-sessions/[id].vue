@@ -30,11 +30,11 @@
                         formatDate(store.currentWorshipSession.createdAt) }}</p>
                 </div>
                 <div class="mb-2">
-                    <span class="text-sm font-bold text-gray-400 mb-2">BACKUP
+                    <span class="text-xs font-bold text-gray-400 mb-2">BACKUP
                         SINGERS</span>
                     <ul class="pl-4 list-disc">
                         <li v-for="bs in store.currentWorshipSession.backupSingers" :key="bs.id"
-                            class="font-thin font-montserrat text-gray-600">
+                            class="font-thin font-montserrat text-gray-600 text-sm">
                             {{ bs.name }}
                         </li>
                     </ul>
@@ -42,8 +42,8 @@
 
                 <div>
                     <div class="flex items-center justify-between mb-2 p-2 bg-blue-50">
-                        <span class="text-sm font-bold text-gray-500">WORSHIP SONGS</span>
-                        <span class="text-sm font-bold text-gray-500">
+                        <span class="text-xs font-bold text-gray-500">WORSHIP SONGS</span>
+                        <span class="text-xs font-bold text-gray-500">
                             SONG COUNT: {{ store.currentWorshipSession.worshipSongs.length }}
                         </span>
                     </div>
