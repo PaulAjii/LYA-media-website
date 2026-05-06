@@ -33,11 +33,8 @@
                             <PhFolder size="150" weight="thin" />
                         </div>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-semibold text-gray-800 text-sm truncate">{{ song.songTitle }}</h3>
-                        <p class="text-xs text-gray-500 truncate">Song Writer: {{ song.songWriter }}</p>
-                    </div>
-                    <p class="text-gray-400 text-xs mt-1">Ministered on: {{ formatDate(song.date) }}</p>
+                    <h3 class="font-semibold text-gray-800 text-sm truncate">Ministration - {{ formatDate(song.date) }}
+                    </h3>
                     <p class="text-gray-400 text-xs mt-1">Uploaded on: {{ formatDate(song.createdAt) }}</p>
                 </NuxtLink>
             </div>
