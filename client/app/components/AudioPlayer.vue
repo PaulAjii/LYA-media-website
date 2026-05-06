@@ -1,5 +1,5 @@
 <template>
-    <div v-if="player.currentTrack || player.currentSong"
+    <div v-if="player.currentTrack || player.currentSong || player.currentWorshipSession"
         class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white px-4 py-3 flex flex-col gap-2 shadow-lg z-50">
         <!-- Track info -->
         <div class="flex items-center justify-between">
@@ -7,9 +7,17 @@
                 <span class=" text-sm font-semibold truncate max-w-xs">{{ player.currentTrack.title }}</span>
                 <span class="text-xs text-gray-400 truncate max-w-xs">{{ player.currentTrack.albumTitle }}</span>
             </div>
-            <div v-else class="flex flex-col">
+
+            <div v-else-if="player.currentSong" class="flex flex-col">
                 <span class=" text-sm font-semibold truncate max-w-xs">{{ player.currentSong!.songTitle }}</span>
                 <span class="text-xs text-gray-400 truncate max-w-xs">{{ player.currentSong!.songWriter }}</span>
+            </div>
+
+            <div v-else class="flex flex-col">
+                <span class=" text-sm font-semibold truncate max-w-xs">Worship - {{
+                    formatDate(player.currentWorshipSession!.date) }}</span>
+                <span class="text-xs text-gray-400 truncate max-w-xs">{{ player.currentWorshipSession!.worshipLeader
+                }}</span>
             </div>
 
             <div class="flex items-center gap-4">
@@ -30,7 +38,13 @@
                         <PhStop size="25" />
                     </span>
                 </button>
-                <button v-else @click="player.stopSong()" title="Stop"
+                <button v-else-if="player.currentSong" @click="player.stopSong()" title="Stop"
+                    class="text-gray-400 hover:text-white focus:outline-none cursor-pointer">
+                    <span class="text-xl">
+                        <PhStop size="25" />
+                    </span>
+                </button>
+                <button v-else @click="player.stopWorship()" title="Stop"
                     class="text-gray-400 hover:text-white focus:outline-none cursor-pointer">
                     <span class="text-xl">
                         <PhStop size="25" />
@@ -71,6 +85,8 @@ const audioRef = ref<HTMLAudioElement | null>(null)
 
 watch(() => player.currentTrack, (track) => {
     if (!track) return
+    if (player.currentSong) player.stopSong()
+    if (player.currentWorshipSession) player.stopWorship()
     nextTick(() => {
         if (audioRef.value) {
             audioRef.value.src = track.audioUrl
@@ -81,9 +97,23 @@ watch(() => player.currentTrack, (track) => {
 
 watch(() => player.currentSong, (song) => {
     if (!song) return
+    if (player.currentTrack) player.stop()
+    if (player.currentWorshipSession) player.stopWorship()
     nextTick(() => {
         if (audioRef.value) {
             audioRef.value.src = song.audioURL
+            audioRef.value.play()
+        }
+    })
+})
+
+watch(() => player.currentWorshipSession, (worship) => {
+    if (!worship) return
+    if (player.currentTrack) player.stop()
+    if (player.currentSong) player.stopSong()
+    nextTick(() => {
+        if (audioRef.value) {
+            audioRef.value.src = worship.audioURL
             audioRef.value.play()
         }
     })
@@ -154,11 +184,25 @@ async function downloadSong() {
     a.click()
 }
 
+async function downloadWorship() {
+    if (!player.currentWorshipSession) return
+    const res = await fetch(player.currentWorshipSession?.audioURL)
+    const blob = await res.blob()
+    const blobURL = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = blobURL
+    a.download = `Worship - ${formatDate(player.currentWorshipSession.date)}`
+    a.target = "_blank"
+    a.click()
+}
+
 async function handleDownload() {
     if (player.currentTrack) {
         await download()
-    } else {
+    } else if (player.currentSong) {
         await downloadSong()
+    } else {
+        await downloadWorship()
     }
 }
 
@@ -170,5 +214,13 @@ function formatTime(seconds: number) {
     const m = Math.floor(seconds / 60)
     const s = Math.floor(seconds % 60)
     return `${m}:${s.toString().padStart(2, '0')}`
+}
+
+function formatDate(date: string) {
+    return new Date(date).toLocaleDateString('en-NG', {
+        month: 'long',
+        year: 'numeric',
+        day: 'numeric',
+    })
 }
 </script>
