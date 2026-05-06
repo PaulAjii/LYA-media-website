@@ -78,7 +78,7 @@ func (h *TrackHandler) CreateTrack(c fiber.Ctx) error {
 	payload := dtos.CreateTrackDTO{
 		AlbumID:     albumID,
 		AlbumTitle:  albumTitle,
-		Title:       title,
+		Title:       trackTitle,
 		TrackNumber: trackNumber,
 		AudioURL:    audioURL,
 	}
