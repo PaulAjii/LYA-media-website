@@ -5,6 +5,7 @@ import (
 	cm "github.com/PaulAjii/LYA-media-website/internal/choir_ministration"
 	"github.com/PaulAjii/LYA-media-website/internal/storage"
 	"github.com/PaulAjii/LYA-media-website/internal/tracks"
+	ws "github.com/PaulAjii/LYA-media-website/internal/worship_sessions"
 	"github.com/PaulAjii/LYA-media-website/pkg/db"
 	"github.com/gofiber/fiber/v3"
 )
@@ -36,4 +37,10 @@ func SetupRoutes(app *fiber.App) {
 	cmUsecase := cm.NewChoirMinistrationUseCase(cmRepo)
 	cmHandler := cm.NewChoirMinistrationHandler(cmUsecase, r2Storage)
 	cm.SetupRoutes(api, cmHandler)
+
+	// Worship Session route setup
+	wsRepo := ws.NewWorshipSessionsRepository(pool)
+	wsUsecase := ws.NewWorshipSessionUsecase(wsRepo)
+	wsHandler := ws.NewWorshipSessionHandler(wsUsecase, r2Storage)
+	ws.SetupRoutes(api, wsHandler)
 }
