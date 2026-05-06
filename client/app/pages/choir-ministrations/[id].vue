@@ -4,7 +4,7 @@
             <p class="uppercase pb-1 font-oswald text-gray-800 md:text-lg">Choir Ministration</p>
             <hr />
             <h2 class="font-monstserrat font-bold uppercase mt-4 text-xl text-gray-700 md:text2xl">Ministration - {{
-                store.currentSong?.date }}
+                formatDate(store.currentSong!.date) }}
             </h2>
         </header>
 

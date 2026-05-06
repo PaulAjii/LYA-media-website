@@ -3,8 +3,9 @@
         <header class="-mt-12">
             <p class="uppercase pb-1 font-oswald text-gray-800 md:text-lg">worship</p>
             <hr />
-            <h2 class="font-monstserrat font-bold uppercase mt-4 text-xl text-gray-700">Worship - {{
-                formatDate(store.currentWorshipSession?.date as string) }}
+            <h2 v-if="store.currentWorshipSession"
+                class="font-monstserrat font-bold uppercase mt-4 text-xl text-gray-700">Worship - {{
+                    formatDate(store.currentWorshipSession.date) }}
             </h2>
             <h3 class="font-montserrat font-bold uppercase my-3 text-sm text-gray-600">Worship Leader: {{
                 store.currentWorshipSession?.worshipLeader }}</h3>
@@ -40,13 +41,13 @@
                 </div>
 
                 <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-bold text-gray-400">WORSHIP SONGS</span>
-                        <span class="text-sm font-bold text-gray-400">
+                    <div class="flex items-center justify-between mb-2 p-2 bg-blue-50">
+                        <span class="text-sm font-bold text-gray-500">WORSHIP SONGS</span>
+                        <span class="text-sm font-bold text-gray-500">
                             SONG COUNT: {{ store.currentWorshipSession.worshipSongs.length }}
                         </span>
                     </div>
-                    <div class="grid grid-cols-1 gap-6 font-montserrat sm:grid-cols-2 lg:grid-cols-4">
+                    <div class="grid grid-cols-1 gap-6 font-montserrat px-3 sm:grid-cols-2 lg:grid-cols-4">
                         <div v-for="ws in store.currentWorshipSession.worshipSongs" :key="ws.id">
                             <h4 class="flex gap-2 font-black text-gray-600 mb-2">
                                 <span>{{ ws.songOrder }}.</span>
