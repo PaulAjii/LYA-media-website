@@ -30,3 +30,30 @@ export interface ChoirMinistration {
   thumbnailURL: string | null
   createdAt: string
 }
+
+export interface WorshipSession {
+    id: string
+    date: string
+    worshipLeader: string
+    audioURL: string
+    thumbnailURL: string | null
+    createdAt: string
+}
+
+export interface WorshipBackupSinger {
+    id: string
+    name: string
+}
+
+export interface WorshipSong {
+    id: string,
+    songTitle: string,
+    lyrics: string | null
+    songOrder: number
+    createdAt: string
+}
+
+export interface WorshipWithBackupAndSongs extends WorshipSession {
+    backupSingers: WorshipBackupSinger[]
+    worshipSongs: WorshipSong[]
+}
