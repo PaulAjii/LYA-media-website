@@ -27,6 +27,12 @@
                 ]">
                     CHOIR-MINISTRATIONS
                 </NuxtLink>
+                <NuxtLink to="/worship-sessions" :class="[
+                    'transition-colors duration-300',
+                    !isTransparent ? 'text-gray-700 hover:text-black' : 'text-white/80 hover:text-white/80'
+                ]">
+                    WORSHIP-SESSIONS
+                </NuxtLink>
             </div>
             <div class="flex items-center gap-4">
                 <NuxtLink to="https://www.facebook.com/OkeAlafiaYouthChurchIB" rel="noopener" target="_blank" external>
