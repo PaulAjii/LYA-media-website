@@ -7,7 +7,7 @@
                 @click.prevent="closeSideMenu" />
         </div>
 
-        <ul class="nav__links gap-10 flex flex-col items-start font-oswald text-4xl font-bold mb-10 px-8">
+        <ul class="nav__links gap-10 flex flex-col items-start font-oswald text-3xl font-bold mb-10 px-8">
             <li>
                 <NuxtLink to="/" @click="closeSideMenu"
                     :class="route.path === '/' ? 'text-blue-700' : 'text-gray-600 hover:text-gray-900'">
@@ -29,7 +29,7 @@
             <li>
                 <NuxtLink to="/worship-sessions" @click="closeSideMenu"
                     :class="route.path === '/worship-sessions' ? 'text-blue-700' : 'text-gray-600 hover:text-gray-900'">
-                    CHOIR-MINISTRATIONS
+                    WORSHIP-SESSIONS
                 </NuxtLink>
             </li>
         </ul>
