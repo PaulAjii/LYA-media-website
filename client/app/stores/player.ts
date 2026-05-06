@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import type { Track, ChoirMinistration } from "../types"
+import type { Track, ChoirMinistration, WorshipWithBackupAndSongs } from "../types"
 import { ref } from "vue"
 
 export interface PlayerTrack extends Track {
@@ -9,6 +9,7 @@ export interface PlayerTrack extends Track {
 export const usePlayerStore = defineStore("player", () => {
     const currentTrack = ref<PlayerTrack | null>(null)
     const currentSong = ref<ChoirMinistration | null>(null)
+    const currentWorshipSession= ref<WorshipWithBackupAndSongs | null>(null)
     const isPlaying = ref(false)
     const currentTime = ref(0)
     const duration = ref(0)
@@ -29,6 +30,11 @@ export const usePlayerStore = defineStore("player", () => {
 
     function playSong(song: ChoirMinistration) {
         currentSong.value = song
+        isPlaying.value = true
+    }
+
+    function playWorship(worship: WorshipWithBackupAndSongs) {
+        currentWorshipSession.value = worship
         isPlaying.value = true
     }
 
@@ -54,6 +60,13 @@ export const usePlayerStore = defineStore("player", () => {
         duration.value = 0
     }
 
+    function stopWorship() {
+        currentWorshipSession.value = null
+        isPlaying.value = false
+        currentTime.value = 0
+        duration.value = 0
+    }
+
     function setCurrentTime(time: number) {
         currentTime.value = time
     }
@@ -65,15 +78,18 @@ export const usePlayerStore = defineStore("player", () => {
     return {
         currentTrack,
         currentSong,
+        currentWorshipSession,
         isPlaying,
         currentTime,
         duration,
         play,
         playSong,
+        playWorship,
         pause,
         resume,
         stop,
         stopSong,
+        stopWorship,
         setCurrentTime,
         setDuration
     }
