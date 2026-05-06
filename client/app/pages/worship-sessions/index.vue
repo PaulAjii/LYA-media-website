@@ -37,7 +37,7 @@
                 </NuxtLink>
             </div>
 
-            <p v-else class="text-gray-500 text-sm w-full text-center">No teachings yet.</p>
+            <p v-else class="text-gray-500 text-sm w-full text-center">No worship session yet.</p>
         </section>
     </main>
 </template>
