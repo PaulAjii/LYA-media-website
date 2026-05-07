@@ -22,7 +22,7 @@ onMounted(() => setDark())
                     <p>Our services schedules are as follows:</p>
                     <p class="pl-4 font-black">Every first, second, and fourth Sundays - 09:00 AM</p>
                     <p class="pl-4 font-black">Every third Sundays - 08:00 AM</p>
-                    <p class="pl-4 font-black">Midweek Services every third fridays - 05:00 AM</p>
+                    <p class="pl-4 font-black">Midweek Services every third fridays - 05:00 PM</p>
                     <p class="my-4">
                         LYA is located at Christ Apostolic Church, Oke Alafia, opp Nigerian Immigration
                         Services, Old Ife
