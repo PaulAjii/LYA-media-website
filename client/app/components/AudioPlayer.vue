@@ -17,7 +17,7 @@
                 <span class=" text-sm font-semibold truncate max-w-xs">Worship - {{
                     formatDate(player.currentWorshipSession!.date) }}</span>
                 <span class="text-xs text-gray-400 truncate max-w-xs">{{ player.currentWorshipSession!.worshipLeader
-                }}</span>
+                    }}</span>
             </div>
 
             <div class="flex items-center gap-4">
@@ -196,13 +196,13 @@ async function downloadWorship() {
     a.click()
 }
 
-async function handleDownload() {
+function handleDownload() {
     if (player.currentTrack) {
-        await download()
+        download()
     } else if (player.currentSong) {
-        await downloadSong()
+        downloadSong()
     } else {
-        await downloadWorship()
+        downloadWorship()
     }
 }
 
