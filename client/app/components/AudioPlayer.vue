@@ -4,7 +4,8 @@
         <!-- Track info -->
         <div class="flex items-center justify-between">
             <div v-if="player.currentTrack" class="flex flex-col">
-                <span class=" text-sm font-semibold truncate max-w-xs">{{ player.currentTrack.title }}</span>
+                <span class=" text-sm font-semibold truncate max-w-xs">Track {{ player.currentTrack.trackNumber
+                    }}</span>
                 <span class="text-xs text-gray-400 truncate max-w-xs">{{ player.currentTrack.albumTitle }}</span>
             </div>
 
@@ -17,7 +18,7 @@
                 <span class=" text-sm font-semibold truncate max-w-xs">Worship - {{
                     formatDate(player.currentWorshipSession!.date) }}</span>
                 <span class="text-xs text-gray-400 truncate max-w-xs">{{ player.currentWorshipSession!.worshipLeader
-                    }}</span>
+                }}</span>
             </div>
 
             <div class="flex items-center gap-4">
