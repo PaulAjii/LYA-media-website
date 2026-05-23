@@ -161,40 +161,43 @@ function seek(e: Event) {
     }
 }
 
-async function download() {
-    if (!player.currentTrack) return
-    const res = await fetch(player.currentTrack?.audioUrl)
-    const blob = await res.blob()
-    const blobURL = URL.createObjectURL(blob)
+function download() {
+    const url = player.currentTrack?.audioUrl
+    const ext = url.split(".").pop() ?? "mp3"
+
     const a = document.createElement('a')
-    a.href = blobURL
-    a.download = player.currentTrack.title
-    a.target = "_blank"
+    a.href = url
+    a.download = `${player.currentTrack.title}.${ext}`
+    a.target = "_self"
+    document.body.appendChild(a)
     a.click()
+    document.body.removeChild(a)
 }
 
-async function downloadSong() {
-    if (!player.currentSong) return
-    const res = await fetch(player.currentSong?.audioURL)
-    const blob = await res.blob()
-    const blobURL = URL.createObjectURL(blob)
+function downloadSong() {
+    const url = player.currentSong?.audioURL
+    const ext = url.split(".").pop() ?? "mp3"
+
     const a = document.createElement('a')
-    a.href = blobURL
-    a.download = player.currentSong.songTitle
-    a.target = "_blank"
+    a.href = url
+    a.download = `${player.currentSong.songTitle}.${ext}`
+    a.target = "_self"
+    document.body.appendChild(a)
     a.click()
+    document.body.removeChild(a)
 }
 
-async function downloadWorship() {
-    if (!player.currentWorshipSession) return
-    const res = await fetch(player.currentWorshipSession?.audioURL)
-    const blob = await res.blob()
-    const blobURL = URL.createObjectURL(blob)
+function downloadWorship() {
+    const url = player.currentWorshipSession?.audioURL
+    const ext = url.split(".").pop() ?? "mp3"
+
     const a = document.createElement('a')
-    a.href = blobURL
-    a.download = `Worship - ${formatDate(player.currentWorshipSession.date)}`
-    a.target = "_blank"
+    a.href = url
+    a.download = `Worship - ${formatDate(player.currentWorshipSession.date)}.${ext}`
+    a.target = "_self"
+    document.body.appendChild(a)
     a.click()
+    document.body.removeChild(a)
 }
 
 function handleDownload() {
