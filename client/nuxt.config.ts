@@ -1,38 +1,33 @@
-import tailwindcss from "@tailwindcss/vite"
+import tailwindcss from "@tailwindcss/vite";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss() as any],
     optimizeDeps: {
-      include: [
-        "@phosphor-icons/vue"
-      ]
-    }
+      include: ["@phosphor-icons/vue"],
+    },
   },
   css: [`~/assets/css/main.css`],
   devtools: { enabled: true },
-  modules: [
-    "@pinia/nuxt",
-    "@nuxt/fonts"
-  ],
+  modules: ["@pinia/nuxt", "@nuxt/fonts", "@vercel/analytics"],
   runtimeConfig: {
     public: {
-      apiUrl: "http://localhost:8080"
-    }
+      apiUrl: "http://localhost:8080",
+    },
   },
   $development: {
     runtimeConfig: {
       public: {
-        apiUrl: "http://localhost:8080"
-      }
-    }
+        apiUrl: "http://localhost:8080",
+      },
+    },
   },
   $production: {
     runtimeConfig: {
       public: {
-        apiUrl: "https://lya-media-website-production.up.railway.app"
-      }
-    }
+        apiUrl: "https://lya-media-website-production.up.railway.app",
+      },
+    },
   },
-})
+});
