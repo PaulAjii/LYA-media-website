@@ -14,7 +14,7 @@
                 <div class="flex items-center justify-between">
                     <span class="text-sm font-bold text-gray-500">TRACKS</span>
                     <span class="text-sm font-bold text-gray-500">TOTAL TRACKS: {{ store.currentAlbum.tracks.length
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-3">
@@ -28,8 +28,7 @@
                                 <PhMusicNote size="150" weight="thin" />
                             </div>
                         </div>
-                        <h3 class="font-semibold text-gray-800 text-sm truncate">{{ track.title }} {{ track.trackNumber
-                        }}</h3>
+                        <h3 class="font-semibold text-gray-800 text-sm truncate">{{ track.title }}</h3>
                         <p class="text-gray-400 text-xs mt-1">Uploaded on: {{ formatDate(track.createdAt) }}</p>
                     </div>
                 </div>
