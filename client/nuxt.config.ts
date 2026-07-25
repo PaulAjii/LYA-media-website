@@ -2,6 +2,15 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    script: [
+      {
+        src="https://www.sabilytics.com/script.js",
+        dataSite="t0bc2ojllsz2",
+        dataDomain="lya-media-website.vercel.app",
+      }
+    ],
+  },
   vite: {
     plugins: [tailwindcss() as any],
     optimizeDeps: {
