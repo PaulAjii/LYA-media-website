@@ -6,8 +6,9 @@ export default defineNuxtConfig({
     script: [
       {
         src="https://www.sabilytics.com/script.js",
-        dataSite="t0bc2ojllsz2",
-        dataDomain="lya-media-website.vercel.app",
+        'data-site'="t0bc2ojllsz2",
+        'data-domain'="lya-media-website.vercel.app",
+        async: true,
       }
     ],
   },
