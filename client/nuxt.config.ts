@@ -3,14 +3,16 @@ import tailwindcss from "@tailwindcss/vite";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
-    script: [
-      {
-        src="https://www.sabilytics.com/script.js",
-        'data-site'="t0bc2ojllsz2",
-        'data-domain'="lya-media-website.vercel.app",
-        async: true,
-      }
-    ],
+    head: {
+      script: [
+        {
+          src="https://www.sabilytics.com/script.js",
+          'data-site'="t0bc2ojllsz2",
+          'data-domain'="lya-media-website.vercel.app",
+          async: true,
+        }
+      ],
+    },
   },
   vite: {
     plugins: [tailwindcss() as any],
